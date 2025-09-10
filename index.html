@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能教育助手</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+         <!-- 顶部标题 -->
+    <header class="header">
+      <h1>🎓 智能教育助手</h1>
+    </header>
+
+   <!-- 主要内容区域 -->
+   <div class="main-content">
+            <!-- 左侧：视频上传区域 -->
+      <div class="video-section">
+        <div class="video-player-container" id="video-player-container" style="display: block;">
+          <video id="video-player" controls>
+            <source src="teach.mp4" type="video/mp4">
+            您的浏览器不支持视频播放。
+          </video>
+        </div>
+        
+                  <!-- 视频下方操作按钮 -->
+         <div class="video-actions" id="video-actions">
+           <button class="action-btn raise-hand-btn" onclick="raiseHand()">
+             <span class="btn-icon">✋</span>
+             <span class="btn-text">举手</span>
+           </button>
+           <button class="action-btn class-end-btn" onclick="endClass()">
+             <span class="btn-icon">🔚</span>
+             <span class="btn-text">下课</span>
+           </button>
+         </div>
+      </div>
+
+            <!-- 右侧：对话区域 -->
+      <div class="chat-section">
+        <!-- 输入区域 -->
+        <div class="input-section">
+          <div class="input-container">
+            <div class="student-input-area">
+              <label for="user-input">学生提问：</label>
+              <textarea 
+                id="user-input" 
+                placeholder="请输入你的问题或学习困惑..."
+                rows="1" style="height: 44px;"
+              ></textarea>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- 老师回复区域 -->
+        <div class="teacher-response-section">
+          <div class="teacher-header">
+            <div class="teacher-avatar">👨‍🏫</div>
+            <div class="teacher-info">
+              <h4>AI老师回复</h4>
+              <span class="status" id="response-status">等待提问...</span>
+            </div>
+            <div class="voice-settings">
+              <button class="voice-toggle-btn" id="voice-play-pause-btn" onclick="toggleAudioPlayback()" title="播放/暂停语音">
+                <span class="btn-icon">⏯️</span>
+              </button>
+            </div>
+          </div>
+          <div class="teacher-response" id="teacher-response">
+            <div class="response-placeholder">
+              <p>AI老师的专业解答将在这里显示</p>
+            </div>
+          </div>
+                  </div>
+       </div>
+    </div>
+
+
+      </div>
+
+   <!-- 语音克隆配置模态框 -->
+   <div class="voice-clone-config-modal" id="voice-clone-config-modal">
+     <div class="voice-clone-config-content">
+       <div class="voice-clone-config-header">
+         <h3>🎤 语音克隆配置</h3>
+         <button class="close-btn" onclick="hideVoiceCloneConfig()">×</button>
+       </div>
+       <div class="voice-clone-config-form">
+         <div class="form-group">
+           <label for="platform-select">选择语音克隆平台</label>
+           <select id="platform-select" onchange="switchPlatform()">
+             <option value="coze">Coze（推荐）</option>
+           </select>
+         </div>
+         
+         <!-- Coze 配置 -->
+         <div id="coze-config" class="平台-config">
+           <div class="form-group">
+             <label for="coze-api-key">Coze API Key</label>
+             <input type="password" id="coze-api-key" placeholder="请输入您的 Coze API Key" value="pat_x32hrejFAJXQZN5tkJlJQ5TSjkKON6RM0oQ51GWegVH2KYnM7dW0hHq7gvNyVlmu">
+           </div>
+         </div>
+         
+         <div class="form-group">
+           <label for="voice-instructions">使用说明</label>
+           <textarea id="voice-instructions" readonly>
+Coze 语音合成使用说明：
+1. 系统已配置好 Coze API Key 和音色 ID
+2. AI 老师将直接使用 Coze 平台的音色回答问题
+3. 无需上传视频进行语音克隆
+4. 音色 ID: 7484882022285049896
+
+注意：Coze 提供高质量的语音合成服务，完全免费使用
+           </textarea>
+         </div>
+         
+         <div class="voice-clone-config-actions">
+           <button class="config-btn cancel-btn" onclick="hideVoiceCloneConfig()">取消</button>
+           <button class="config-btn save-btn" onclick="saveVoiceCloneConfig()">保存配置</button>
+         </div>
+       </div>
+     </div>
+   </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
