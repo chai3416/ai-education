@@ -5,6 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>智能教育助手</title>
   <link rel="stylesheet" href="style.css">
+  
+  <!-- MathJax 配置 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      },
+      startup: {
+        ready() {
+          console.log('MathJax 已准备就绪');
+          MathJax.startup.defaultReady();
+        }
+      }
+    };
+  </script>
+  
+  <!-- 加载 MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+  <!-- 加载公式修复工具 -->
+  <script src="formula-fixer.js"></script>
 </head>
 <body>
   <div class="container">
@@ -15,17 +43,52 @@
 
    <!-- 主要内容区域 -->
    <div class="main-content">
-            <!-- 左侧：视频上传区域 -->
+            <!-- 左侧：课件图片 + 语音播放区域 -->
       <div class="video-section">
         <div class="video-player-container" id="video-player-container" style="display: block;">
-          <video id="video-player" controls>
-            <source src="teach.mp4" type="video/mp4">
-            您的浏览器不支持视频播放。
-          </video>
+          <div id="lesson-viewer" style="
+            width: 100%;
+            height: 360px;
+            background:#000;
+            border-radius: 12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow:hidden;
+            position:relative;
+          ">
+            <img id="lesson-image-viewer"
+                 alt="当前课件图片"
+                 style="max-width:100%; max-height:100%; object-fit:contain;" />
+            <button id="lesson-upload-btn"
+                    onclick="selectLessonImages()"
+                    style="position:absolute; bottom:12px; right:12px; padding:8px 14px; border-radius:999px; border:none; font-size:12px; font-weight:600; color:#fff; background:linear-gradient(135deg,#2563eb,#4f46e5); box-shadow:0 8px 20px rgba(37,99,235,0.4); cursor:pointer; opacity:0.9;">
+              🖼️ 上传图片
+            </button>
+          </div>
         </div>
-        
-                  <!-- 视频下方操作按钮 -->
+
+        <!-- 文档预览：用于显示上传的 PDF（PPT/PPTX 请先转为 PDF） -->
+        <div id="doc-viewer-container" style="display:none; margin-top:12px; height:360px; border:1px solid #e5e7eb;">
+          <embed id="pdf-viewer" type="application/pdf" style="width:100%; height:100%;" />
+        </div>
+
+        <!-- 隐藏的文件选择器：课件图片 -->
+        <input id="lesson-image-input" type="file" accept="image/*" multiple style="display:none" />
+
+        <!-- 隐藏的文件选择器：课件文档（沿用原逻辑） -->
+        <input id="doc-file-input" type="file" accept=".pdf,.ppt,.pptx" style="display:none" onchange="handleDocumentUpload(event)" />
+
+         <!-- 下方操作按钮：上课 / 暂停/继续 / 举手 / 下课 -->
          <div class="video-actions" id="video-actions">
+           <button class="action-btn" onclick="startLesson()">
+             <span class="btn-icon">▶️</span>
+             <span class="btn-text">上课</span>
+           </button>
+           <button class="action-btn" id="lesson-pause-btn" onclick="toggleLessonPlayPause()">
+             <span class="btn-icon">⏸️</span>
+             <span class="btn-text">暂停</span>
+           </button>
            <button class="action-btn raise-hand-btn" onclick="raiseHand()">
              <span class="btn-icon">✋</span>
              <span class="btn-text">举手</span>
@@ -34,6 +97,13 @@
              <span class="btn-icon">🔚</span>
              <span class="btn-text">下课</span>
            </button>
+         </div>
+
+         <div id="lesson-status" style="margin-top:8px; font-size:12px; color:#6b7280;">
+           未选择课件图片
+         </div>
+         <div id="lesson-progress" style="margin-top:4px; height:4px; background:#e5e7eb; border-radius:999px; overflow:hidden; display:none;">
+           <div id="lesson-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg,#2563eb,#4f46e5);"></div>
          </div>
       </div>
 
